@@ -1022,12 +1022,15 @@
     }
   }
 
+  /* ═══════════════════════════════════════════════════════
+     🎵🎻 موزیک فولوت + ویولون (نسخه تمیز و بدون خش‌خش)
+     ═══════════════════════════════════════════════════════ */
   let audioCtx = null;
   let masterGain = null;
   let reverbGain = null;
   let musicPlaying = false;
   let musicTimers = [];
-  let currentVolume = 0.3;
+  let currentVolume = 0.22;
 
   const fluteMelody = [
     { f: 587.33, d: 1.6, v: 0.55 },
@@ -1063,20 +1066,22 @@
     { notes: [146.83, 220.00, 293.66], d: 7.0 },
   ];
 
+  /* ✅ Reverb نرم‌تر و کوتاه‌تر — بدون خش‌خش */
   function createReverb(ctx) {
     const convolver = ctx.createConvolver();
-    const length = ctx.sampleRate * 3.0;
+    const length = ctx.sampleRate * 1.5;
     const impulse = ctx.createBuffer(2, length, ctx.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
       const data = impulse.getChannelData(ch);
       for (let i = 0; i < length; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.2);
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 3.5);
       }
     }
     convolver.buffer = impulse;
     return convolver;
   }
 
+  /* ✅ فلوت تمیز و گرم */
   function playFluteNote(freq, duration, startTime, velocity) {
     const now = startTime;
     const osc = audioCtx.createOscillator();
@@ -1087,36 +1092,35 @@
     osc2.type = 'sine';
     osc2.frequency.value = freq * 2;
     const osc2Gain = audioCtx.createGain();
-    osc2Gain.gain.value = 0.12;
+    osc2Gain.gain.value = 0.04;
 
     const breath = audioCtx.createOscillator();
     breath.type = 'sine';
     breath.frequency.value = freq * 4;
     const breathGain = audioCtx.createGain();
-    breathGain.gain.value = 0.02;
+    breathGain.gain.value = 0.006;
 
     const vibrato = audioCtx.createOscillator();
     vibrato.type = 'sine';
-    vibrato.frequency.value = 4.5;
+    vibrato.frequency.value = 4.2;
     const vibratoGain = audioCtx.createGain();
-    vibratoGain.gain.value = freq * 0.005;
+    vibratoGain.gain.value = freq * 0.002;
     vibrato.connect(vibratoGain);
     vibratoGain.connect(osc.frequency);
-    vibratoGain.connect(osc2.frequency);
 
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(3000, now);
-    filter.frequency.exponentialRampToValueAtTime(1800, now + duration);
-    filter.Q.value = 0.6;
+    filter.frequency.setValueAtTime(1800, now);
+    filter.frequency.exponentialRampToValueAtTime(1000, now + duration);
+    filter.Q.value = 0.4;
 
     const gain = audioCtx.createGain();
-    const peak = velocity * 0.1;
+    const peak = velocity * 0.07;
     gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(peak, now + 0.15);
+    gain.gain.linearRampToValueAtTime(peak, now + 0.12);
     gain.gain.linearRampToValueAtTime(peak * 0.85, now + duration * 0.4);
     gain.gain.linearRampToValueAtTime(peak * 0.6, now + duration * 0.85);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration + 0.35);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration + 0.3);
 
     osc.connect(filter);
     osc2.connect(osc2Gain);
@@ -1126,18 +1130,19 @@
     filter.connect(gain);
 
     const panner = audioCtx.createStereoPanner();
-    panner.pan.value = Math.sin(freq * 0.01) * 0.25;
+    panner.pan.value = Math.sin(freq * 0.01) * 0.2;
     gain.connect(panner);
     panner.connect(masterGain);
     panner.connect(reverbGain);
 
-    const endTime = now + duration + 0.4;
+    const endTime = now + duration + 0.35;
     osc.start(now); osc.stop(endTime);
     osc2.start(now); osc2.stop(endTime);
     breath.start(now); breath.stop(endTime);
     vibrato.start(now); vibrato.stop(endTime);
   }
 
+  /* ✅ ویولون نرم و بدون نویز */
   function playViolinPad(notes, duration, startTime) {
     notes.forEach((freq) => {
       const osc = audioCtx.createOscillator();
@@ -1146,22 +1151,22 @@
 
       const detune = audioCtx.createOscillator();
       detune.type = 'sine';
-      detune.frequency.value = freq * 1.002;
+      detune.frequency.value = freq * 1.001;
       const detuneGain = audioCtx.createGain();
-      detuneGain.gain.value = freq * 0.003;
+      detuneGain.gain.value = freq * 0.0015;
       detune.connect(detuneGain);
       detuneGain.connect(osc.frequency);
 
       const gain = audioCtx.createGain();
       gain.gain.setValueAtTime(0, startTime);
-      gain.gain.linearRampToValueAtTime(0.03, startTime + 2);
-      gain.gain.linearRampToValueAtTime(0.025, startTime + duration * 0.6);
+      gain.gain.linearRampToValueAtTime(0.018, startTime + 2);
+      gain.gain.linearRampToValueAtTime(0.015, startTime + duration * 0.6);
       gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
 
       const filter = audioCtx.createBiquadFilter();
       filter.type = 'lowpass';
-      filter.frequency.value = 750;
-      filter.Q.value = 0.6;
+      filter.frequency.value = 500;
+      filter.Q.value = 0.4;
 
       osc.connect(filter);
       filter.connect(gain);
@@ -1175,6 +1180,7 @@
     });
   }
 
+  /* ✅ Audio init با کمپرسور نرم */
   function initAudio() {
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1183,14 +1189,14 @@
     masterGain.gain.value = currentVolume;
 
     const compressor = audioCtx.createDynamicsCompressor();
-    compressor.threshold.value = -22;
-    compressor.knee.value = 22;
-    compressor.ratio.value = 10;
-    compressor.attack.value = 0.008;
-    compressor.release.value = 0.25;
+    compressor.threshold.value = -28;
+    compressor.knee.value = 30;
+    compressor.ratio.value = 6;
+    compressor.attack.value = 0.01;
+    compressor.release.value = 0.3;
 
     reverbGain = audioCtx.createGain();
-    reverbGain.gain.value = 0.35;
+    reverbGain.gain.value = 0.10;
     const convolver = createReverb(audioCtx);
     reverbGain.connect(convolver);
     convolver.connect(compressor);
@@ -1422,7 +1428,7 @@
     });
   }
 
-  console.log('%c💌 یه نامه برات دارم - 🎵 فلوت + 🎻 ویولون', 'color:#ff6b9d; font-size:18px; font-weight:bold;');
+  console.log('%c💌 یه نامه برات دارم - 🎵 فلوت + 🎻 ویولون (نسخه تمیز)', 'color:#ff6b9d; font-size:18px; font-weight:bold;');
 </script>
 </body>
 </html>
