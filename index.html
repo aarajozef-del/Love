@@ -726,6 +726,150 @@
     padding-top: 4px;
   }
 
+  /* ═══════════════════════════════════════════════════
+     🎵 نوار داینامیک سامسونگی (زیر کادر نامه)
+     ═══════════════════════════════════════════════════ */
+  .samsung-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 14px 0 0;
+    padding: 10px 16px;
+    background: rgba(255, 245, 248, .7);
+    border-radius: 14px;
+    border: 1.5px solid rgba(255, 143, 176, .6);
+    box-shadow:
+      0 4px 16px rgba(255, 107, 157, .12),
+      inset 0 0 20px rgba(255, 182, 203, .08);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .5s ease, transform .5s ease;
+    flex-shrink: 0;
+  }
+  .samsung-bar.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .eq-waves {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .eq-waves span {
+    width: 3px;
+    height: 6px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #ff6b9d, #b83068);
+    box-shadow: 0 0 6px rgba(255, 107, 157, .7);
+    animation: eqBounce 1.1s ease-in-out infinite;
+    transform-origin: bottom;
+  }
+  .eq-waves span:nth-child(1) { animation-delay: 0s;    }
+  .eq-waves span:nth-child(2) { animation-delay: .18s; }
+  .eq-waves span:nth-child(3) { animation-delay: .36s; }
+  .eq-waves span:nth-child(4) { animation-delay: .54s; }
+  .eq-waves span:nth-child(5) { animation-delay: .72s; }
+
+  @keyframes eqBounce {
+    0%,100% { height: 6px;  opacity: .7; }
+    50%     { height: 20px; opacity: 1; }
+  }
+
+  .samsung-bar.paused .eq-waves span {
+    animation-play-state: paused;
+    height: 4px;
+    opacity: .35;
+  }
+
+  .music-icon {
+    font-size: 14px;
+    color: var(--deep-pink);
+    text-shadow: 0 0 8px rgba(255, 107, 157, .6);
+    animation: musicPulse 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes musicPulse {
+    0%,100% { transform: scale(1);    opacity: .85; }
+    50%     { transform: scale(1.15); opacity: 1; }
+  }
+
+  .progress-track {
+    position: relative;
+    flex: 1;
+    height: 8px;
+    background: rgba(184, 48, 104, .12);
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(184, 48, 104, .15);
+  }
+
+  .progress-fill {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(270deg,
+      #ff6b9d 0%,
+      #ff3d7f 35%,
+      #b83068 60%,
+      #ffd77a 100%);
+    background-size: 200% 100%;
+    border-radius: 999px;
+    transition: width .35s cubic-bezier(.2, .9, .3, 1);
+    box-shadow:
+      0 0 10px rgba(255, 107, 157, .6),
+      0 0 20px rgba(255, 61, 127, .3);
+    animation: progressGlow 2.5s ease-in-out infinite;
+  }
+  @keyframes progressGlow {
+    0%,100% { background-position:   0% 50%; }
+    50%     { background-position: 100% 50%; }
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #ffc2d6 40%, transparent 70%);
+    box-shadow:
+      0 0 12px rgba(255, 255, 255, .9),
+      0 0 22px rgba(255, 107, 157, .8);
+    animation: dotPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%,100% { transform: translate(-50%, -50%) scale(1);   opacity: 1;   }
+    50%     { transform: translate(-50%, -50%) scale(1.3); opacity: .85; }
+  }
+
+  .progress-percent {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--deep-pink);
+    min-width: 34px;
+    text-align: center;
+    font-family: 'Vazirmatn', sans-serif;
+    text-shadow: 0 0 6px rgba(255, 107, 157, .5);
+    flex-shrink: 0;
+  }
+
+  .samsung-bar.complete {
+    animation: completeFlash 1s ease-out;
+  }
+  @keyframes completeFlash {
+    0%   { box-shadow: 0 4px 16px rgba(255, 107, 157, .12), inset 0 0 20px rgba(255, 182, 203, .08); }
+    50%  { box-shadow: 0 0 30px rgba(255, 215, 122, .8),    inset 0 0 30px rgba(255, 215, 122, .3); }
+    100% { box-shadow: 0 4px 16px rgba(255, 107, 157, .12), inset 0 0 20px rgba(255, 182, 203, .08); }
+  }
+
   .letter-footer {
     margin-top: 14px;
     padding-top: 12px;
@@ -790,6 +934,12 @@
     .letter-inner::before { font-size: 16px; top: 8px; right: 10px; }
     .letter-inner::after { font-size: 16px; bottom: 8px; left: 10px; }
     .corner-heart { font-size: 11px; }
+    .samsung-bar { padding: 8px 12px; gap: 9px; margin-top: 10px; }
+    .eq-waves { height: 18px; gap: 2.5px; }
+    .eq-waves span { width: 2.5px; }
+    .progress-track { height: 7px; }
+    .progress-percent { font-size: 10px; min-width: 30px; }
+    .music-icon { font-size: 12px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -866,6 +1016,22 @@
         </div>
       </div>
 
+      <!-- 🎵 نوار داینامیک موزیک + پیشرفت متن (سامسونگی) -->
+      <div class="samsung-bar" id="samsungBar">
+        <span class="music-icon">🎵</span>
+        <div class="eq-waves">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span class="progress-percent" id="progressPercent">۰٪</span>
+      </div>
+
       <div class="letter-footer" id="letterFooter">
         <div class="signature">با تمام وجودم، همیشه کنارت</div>
         <div class="footer-hearts">❤ ❤ ❤</div>
@@ -887,6 +1053,9 @@
   const letterBody    = document.getElementById('letterBody');
   const letterFooter  = document.getElementById('letterFooter');
   const soundWave     = document.getElementById('soundWave');
+  const samsungBar      = document.getElementById('samsungBar');
+  const progressFill    = document.getElementById('progressFill');
+  const progressPercent = document.getElementById('progressPercent');
 
   const fullTitle = 'یه نامه برات دارم';
   let ti = 0;
@@ -1023,7 +1192,7 @@
   }
 
   /* ═══════════════════════════════════════════════════════
-     🎵🎻 موزیک فولوت + ویولون (نسخه تمیز و بدون خش‌خش)
+     🎵🎻 موزیک فولوت + ویولون (نسخه تمیز)
      ═══════════════════════════════════════════════════════ */
   let audioCtx = null;
   let masterGain = null;
@@ -1066,7 +1235,6 @@
     { notes: [146.83, 220.00, 293.66], d: 7.0 },
   ];
 
-  /* ✅ Reverb نرم‌تر و کوتاه‌تر — بدون خش‌خش */
   function createReverb(ctx) {
     const convolver = ctx.createConvolver();
     const length = ctx.sampleRate * 1.5;
@@ -1081,7 +1249,6 @@
     return convolver;
   }
 
-  /* ✅ فلوت تمیز و گرم */
   function playFluteNote(freq, duration, startTime, velocity) {
     const now = startTime;
     const osc = audioCtx.createOscillator();
@@ -1142,7 +1309,6 @@
     vibrato.start(now); vibrato.stop(endTime);
   }
 
-  /* ✅ ویولون نرم و بدون نویز */
   function playViolinPad(notes, duration, startTime) {
     notes.forEach((freq) => {
       const osc = audioCtx.createOscillator();
@@ -1180,7 +1346,6 @@
     });
   }
 
-  /* ✅ Audio init با کمپرسور نرم */
   function initAudio() {
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1237,6 +1402,7 @@
     if (audioCtx.state === 'suspended') audioCtx.resume();
     musicPlaying = true;
     soundWave.classList.add('active');
+    samsungBar.classList.remove('paused');
     scheduleMusicLoop();
   }
 
@@ -1244,6 +1410,7 @@
     if (!musicPlaying) return;
     musicPlaying = false;
     soundWave.classList.remove('active');
+    samsungBar.classList.add('paused');
     musicTimers.forEach(t => clearTimeout(t));
     musicTimers = [];
     if (masterGain && audioCtx) {
@@ -1262,9 +1429,42 @@
   window.addEventListener('beforeunload', stopMusic);
   window.addEventListener('blur', stopMusic);
 
+  /* ═══════════════════════════════════════════════════════
+     ⌨️ تایپ متن + نوار پیشرفت سامسونگی
+     ═══════════════════════════════════════════════════════ */
   let typingTimeouts = [];
   let typingAborted = false;
   let userScrolled = false;
+  let totalCharsToType = 0;
+  let currentCharsTyped = 0;
+
+  // تبدیل عدد به فارسی
+  const toPersian = (n) => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+
+  function updateProgress() {
+    if (totalCharsToType === 0) return;
+    const percent = Math.min(100, Math.round((currentCharsTyped / totalCharsToType) * 100));
+    progressFill.style.width = percent + '%';
+    progressPercent.textContent = toPersian(percent) + '٪';
+
+    if (percent >= 100 && !samsungBar.classList.contains('complete')) {
+      samsungBar.classList.add('complete');
+      setTimeout(() => samsungBar.classList.remove('complete'), 1200);
+    }
+  }
+
+  function showSamsungBar() {
+    samsungBar.classList.add('visible');
+    samsungBar.classList.remove('paused', 'complete');
+    progressFill.style.width = '0%';
+    progressPercent.textContent = '۰٪';
+  }
+
+  function hideSamsungBar() {
+    samsungBar.classList.remove('visible', 'complete');
+    progressFill.style.width = '0%';
+    progressPercent.textContent = '۰٪';
+  }
 
   letterBody.addEventListener('scroll', () => {
     const isAtBottom = letterBody.scrollHeight - letterBody.scrollTop - letterBody.clientHeight < 30;
@@ -1276,6 +1476,13 @@
     let totalDelay = 0;
     const CHAR_DELAY = 45;
     const PARA_PAUSE = 500;
+
+    totalCharsToType = 0;
+    currentCharsTyped = 0;
+    paragraphs.forEach(p => {
+      totalCharsToType += (p.getAttribute('data-text') || '').length;
+    });
+    updateProgress();
 
     letterBody.scrollTop = 0;
     userScrolled = false;
@@ -1297,6 +1504,9 @@
           } else {
             p.textContent += text[i];
           }
+
+          currentCharsTyped++;
+          updateProgress();
         }, startDelay + i * CHAR_DELAY);
 
         typingTimeouts.push(t);
@@ -1357,6 +1567,7 @@
       setTimeout(() => {
         letterBody.scrollTop = 0;
         typingAborted = false;
+        showSamsungBar();
         typeAllParagraphs();
       }, 500);
     }, 1100);
@@ -1374,6 +1585,7 @@
     if (e) e.stopPropagation();
     modal.classList.remove('show');
     abortTyping();
+    hideSamsungBar();
     letterFooter.classList.remove('visible');
 
     setTimeout(() => {
@@ -1428,7 +1640,7 @@
     });
   }
 
-  console.log('%c💌 یه نامه برات دارم - 🎵 فلوت + 🎻 ویولون (نسخه تمیز)', 'color:#ff6b9d; font-size:18px; font-weight:bold;');
+  console.log('%c💌 یه نامه برات دارم - 🎵 فلوت + 🎻 ویولون (سامسونگی)', 'color:#ff6b9d; font-size:18px; font-weight:bold;');
 </script>
 </body>
 </html>
